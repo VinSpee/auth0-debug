@@ -2,12 +2,13 @@ import Auth0Lock from 'auth0-lock';
 import { withRouter } from 'react-router-dom';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { homepage } from '../../package.json';
 
 const AUTH_CONFIG = {
   clientId: 'MaSSz3P8F5978YQu2g1hsoo4PqxHv6pP',
   domain: 'vinspee-test.auth0.com',
   callbackURL: process.env.NODE_ENV === 'production'
-    ? `https://vinspee.github.io${process.env.PUBLIC_URL}/login`
+    ? `${homepage}${process.env.PUBLIC_URL}login`
     : `${process.env.HOST}:${process.env.PORT}/login`,
 };
 
