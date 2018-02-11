@@ -13,7 +13,7 @@ import Auth from './auth';
 ReactDOM.render(
   <div>
     <Router
-      basename={process.env.production ? '/auth0-test' : '/'}
+      basename={process.env.PUBLIC_URL}
     >
       <div>
         <div style={{ background: 'cyan' }}>
