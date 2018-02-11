@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 const AUTH_CONFIG = {
   clientId: 'MaSSz3P8F5978YQu2g1hsoo4PqxHv6pP',
   domain: 'vinspee-test.auth0.com',
-  callbackURL: 'http://localhost:3000/login',
+  callbackURL: process.env.production 
+    ? 'https://vinspee.github.io/auth0-debug/login'
+    : 'http://localhost:3000/login',
 };
 
 class AuthProvider extends Component {

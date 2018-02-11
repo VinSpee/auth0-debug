@@ -1,6 +1,5 @@
 import React from 'react';
 import Auth from './auth';
-import './App.css';
 
 export default () => (
   <div className="App">

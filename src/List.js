@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import Auth from './auth';
-import './App.css';
 
 const List = () => (
   <div className="App">
