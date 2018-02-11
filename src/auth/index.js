@@ -1,6 +1,6 @@
 import Auth0Lock from 'auth0-lock';
 import { withRouter } from 'react-router-dom';
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { homepage } from '../../package.json';
 
@@ -9,10 +9,10 @@ const AUTH_CONFIG = {
   domain: 'vinspee-test.auth0.com',
   callbackURL: process.env.NODE_ENV === 'production'
     ? `${homepage}${process.env.PUBLIC_URL}login`
-    : `${process.env.HOST}:${process.env.PORT}/login`,
+    : `http://localhost:3000/login`,
 };
 
-class AuthProvider extends Component {
+class AuthProvider extends PureComponent {
   static propTypes = {
     history: PropTypes.object.isRequired, // eslint-disable-line
     children: PropTypes.func.isRequired,
@@ -23,25 +23,6 @@ class AuthProvider extends Component {
     this.state = {
       profile: null,
     };
-
-    this.lock = new Auth0Lock(AUTH_CONFIG.clientId, AUTH_CONFIG.domain, {
-      autoclose: true,
-      auth: {
-        redirectUrl: AUTH_CONFIG.callbackURL,
-        responseType: 'token id_token',
-        audience: `https://${AUTH_CONFIG.domain}/userinfo`,
-        params: {
-          scope: 'openid profile',
-        },
-      },
-    });
-
-    this.lock.on('authenticated', this.setSession);
-    // Add a callback for Lock's `authorization_error` event
-    this.lock.on('authorization_error', (err) => {
-      console.error(err); // eslint-disable-line no-console
-      this.props.history.replace('/');
-    });
   }
 
   getProfile = (cb) => {
@@ -108,6 +89,43 @@ class AuthProvider extends Component {
     this.setState(() => ({
       profile: null,
     }));
+  }
+
+  componentDidMount() {
+    this.lock = new Auth0Lock(AUTH_CONFIG.clientId, AUTH_CONFIG.domain, {
+      autoclose: true,
+      auth: {
+        redirectUrl: AUTH_CONFIG.callbackURL,
+        responseType: 'token id_token',
+        audience: `https://${AUTH_CONFIG.domain}/userinfo`,
+        params: {
+          scope: 'openid profile',
+        },
+      },
+    });
+
+    this.lock.on('authenticated', this.setSession);
+    // Add a callback for Lock's `authorization_error` event
+    this.lock.on('authorization_error', (err) => {
+      console.error(err); // eslint-disable-line no-console
+      this.props.history.replace('/');
+    });
+    if (this.isAuthenticated) {
+      this.getProfile((err, profile) => {
+        if (err) {
+          throw new Error(err.statusText);
+        }
+        this.setState(state => ({
+          ...state,
+          profile,
+        }));
+        this.props.history.replace('/');
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.lock = null;
   }
 
   render() {

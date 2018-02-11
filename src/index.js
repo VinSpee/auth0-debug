@@ -20,11 +20,17 @@ ReactDOM.render(
           <Auth>
             {({
               profile,
-              authInstance
+              authInstance,
+              logout,
             }) => (
               <div>
                 profile:
                 {JSON.stringify(profile)}
+                <div>
+                  <button onClick={logout}>
+                    log out
+                  </button>
+                </div>
               </div>
             )}
           </Auth>
